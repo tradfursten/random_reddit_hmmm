@@ -4,16 +4,14 @@
   <head></head>
   <body style="display:flex;height: 100vh;flex-direction: column;justify-content: center;align-items: center;margin: 0;">
     <h1>Hmmmm</h1>
-    <img id="img" style="max-height: 90vh; max-width: 90vw">
+    <div style="height: 100%;">
+      <img id="img" style="max-height: 80%; max-width: 100%"/>
+    </div>
     <script>
       function random() {
         fetch('https://www.reddit.com/r/hmmm/random.json')
-          .then(data => {
-            return data.json();
-          })
-          .then(json => {
-            return json[0].data.children[0].data.url;
-          })
+          .then(data => data.json())
+          .then(json => json[0].data.children[0].data.url)
           .then(url => {
             document.getElementById('img').setAttribute('src', url);
           })
@@ -24,7 +22,8 @@
       }
 
 window.onload = function(e){
-  random()  
+  random();
+  setInterval(random, 60*1000);
 }
 
     </script>
