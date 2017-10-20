@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+  <head></head>
+  <body style="display:flex;height: 100vh;flex-direction: column;justify-content: center;align-items: center;margin: 0;">
+    <h1>Hmmmm</h1>
+    <img id="img" style="max-height: 90vh; max-width: 90vw">
+    <script>
+      function random() {
+        fetch('https://www.reddit.com/r/hmmm/random.json')
+          .then(data => {
+            return data.json();
+          })
+          .then(json => {
+            return json[0].data.children[0].data.url;
+          })
+          .then(url => {
+            document.getElementById('img').setAttribute('src', url);
+          })
+          .catch(err => {
+            console.log(err);
+            random();
+          })
+      }
+
+window.onload = function(e){
+  random()  
+}
+
+    </script>
+
+  </body>
+
+</html>
