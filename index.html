@@ -11,8 +11,13 @@
       function random() {
         fetch('https://www.reddit.com/r/hmmm/random.json')
           .then(data => data.json())
-          .then(json => json[0].data.children[0].data.url)
-          .then(url => {
+          .then(json => {
+            if(json[0].data.children[0].data.over_18) {
+              return Promise.reject('nsfw');
+            }
+            return json[0].data.children[0].data.url
+           })
+           .then(url => {
             document.getElementById('img').setAttribute('src', url);
           })
           .catch(err => {
