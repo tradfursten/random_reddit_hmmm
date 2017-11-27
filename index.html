@@ -3,19 +3,37 @@
 
   <head></head>
   <body style="display:flex;height: 100vh;flex-direction: column;justify-content: center;align-items: center;margin: 0;">
-    <h1>Hmmmm</h1>
+    <h1 id="title-subreddit">Hmmmm</h1>
     <img id="img" style="max-height: 90vh; max-width: 90vw">
     <script>
+      const imageElement = document.getElementById('img');
+      const title = document.querySelector('#title-subreddit');
+      let subreddit;
+      const regex = /subreddit\=(\w+)/i;
+      let search = regex.exec(window.location.search);
+      if(!search) {
+        subreddit = 'hmmm';
+      } else {
+        subreddit = search.replace('subreddit=', '');
+      }
+
+      title.innerHTML = subreddit;
       function random() {
-        fetch('https://www.reddit.com/r/hmmm/random.json')
+        fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
           .then(data => {
             return data.json();
           })
           .then(json => {
-            return json[0].data.children[0].data.url;
+            return json[0].data.children[0].data;
+          })
+          .then(post => {
+            if(!post.preview) {
+              throw 'Post is not an image';
+            }
+            return post.url;
           })
           .then(url => {
-            document.getElementById('img').setAttribute('src', url);
+            imageElement.setAttribute('src', url);
           })
           .catch(err => {
             console.log(err);
@@ -23,9 +41,9 @@
           })
       }
 
-window.onload = function(e){
-  random()  
-}
+      window.onload = function(e){
+        random()
+      }
 
     </script>
 
