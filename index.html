@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html>
-
-  <head></head>
+  <head>
+    <style>
+      #title-subreddit, #post-title {
+        margin: 0 0 10px 0;
+      }
+    </style>
+  </head>
   <body style="display:flex;height: 100vh;flex-direction: column;justify-content: center;align-items: center;margin: 0;">
     <h1 id="title-subreddit">Hmmmm</h1>
-    <img id="img" style="max-height: 90vh; max-width: 90vw">
+    <h4 id="post-title"></h4>
+    <img id="img" style="max-height: 80vh; max-width: 90vw">
     <script>
-      const imageElement = document.getElementById('img');
-      const title = document.querySelector('#title-subreddit');
-      let subreddit;
-      const regex = /subreddit\=(\w+)/i;
-      let search = regex.exec(window.location.search);
-      if(!search) {
-        subreddit = 'hmmm';
-      } else {
-        subreddit = search.replace('subreddit=', '');
-      }
+      function CustomError (text) { this.text = text; }
 
-      title.innerHTML = subreddit;
+      const subreddit = getSubredditFromGetParam();
+      const imageElement = document.getElementById('img');
+      const postTitleElement = document.getElementById('post-title');
+      const subredditTitleElement = document.getElementById('title-subreddit');
+
+      subredditTitleElement.innerHTML = subreddit;
+
       function random() {
         fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
-          .then(data => {
-            return data.json();
-          })
-          .then(json => {
-            return json[0].data.children[0].data;
+          .then(data => data.json())
+          .then(json => json[0].data.children[0].data)
+          .then(post => {
+            if (post.over_18) {
+              throw new CustomError('Post is not suitable for children');
+            }
+
+            if (post.post_hint !== 'image') {
+              throw new CustomError('Post is not an image');
+            }
+
+            return post;
           })
           .then(post => {
-            if(!post.preview) {
-              throw 'Post is not an image';
-            }
-            return post.url;
-          })
-          .then(url => {
-            imageElement.setAttribute('src', url);
+            postTitleElement.innerText = post.title;
+            imageElement.setAttribute('src', post.url);
           })
           .catch(err => {
-            console.log(err);
-            random();
+            console.error(err);
+            if (err.text) {
+              random();
+            }
           })
       }
 
-      window.onload = function(e){
-        random()
+      window.onload = random;
+
+      function getSubredditFromGetParam() {
+        let subreddit;
+        const regex = /subreddit=(\w+)/i;
+        let search = regex.exec(window.location.search);
+        if (!search) {
+          subreddit = 'hmmm';
+        } else {
+          subreddit = search[1];
+        }
+        return subreddit;
       }
 
     </script>
