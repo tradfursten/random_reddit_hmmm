@@ -11,6 +11,7 @@
     <h1 id="title-subreddit">Hmmmm</h1>
     <h4 id="post-title"></h4>
     <img id="img" style="max-height: 80vh; max-width: 90vw">
+
     <script>
       function CustomError (text) { this.text = text; }
 
@@ -22,6 +23,7 @@
       subredditTitleElement.innerHTML = subreddit;
 
       function random() {
+
         fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
           .then(data => data.json())
           .then(json => json[0].data.children[0].data)
@@ -61,6 +63,7 @@
         }
         return subreddit;
       }
+
 
     </script>
 
