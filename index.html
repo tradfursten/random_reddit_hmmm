@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html>
 
-  <head></head>
-  <body style="display:flex;height: 100vh;flex-direction: column;justify-content: center;align-items: center;margin: 0;">
-    <h1>Hmmmm</h1>
-    <div style="height: 100%;">
-      <img id="img" style="max-height: 80%; max-width: 100%"/>
-    </div>
-    <script>
-      function random() {
-        fetch('https://www.reddit.com/r/hmmm/random.json')
-          .then(data => data.json())
-          .then(json => {
-            if(json[0].data.children[0].data.over_18) {
-              return Promise.reject('nsfw');
-            }
-            return json[0].data.children[0].data.url
-           })
-           .then(url => {
-            document.getElementById('img').setAttribute('src', url);
-          })
-          .catch(err => {
-            console.log(err);
-            random();
-          })
+<head></head>
+<body style="display:flex;height: 100vh;flex-direction: column;justify-content: center;align-items: center;margin: 0;">
+
+  <h1>Hmmmm</h1>
+  <button type="button" id="another">Another one pls</button>
+
+  <div style="height: 100%;">
+    <img id="img" style="max-height: 80%; max-width: 100%"/>
+  </div>
+  <script>
+  function random() {
+    fetch('https://www.reddit.com/r/hmmm/random.json')
+    .then(data => data.json())
+    .then(json => {
+      if(json[0].data.children[0].data.over_18) {
+        return Promise.reject('nsfw');
       }
+      return json[0].data.children[0].data.url
+    })
+    .then(url => {
+      document.getElementById('img').setAttribute('src', url);
+    })
+    .catch(err => {
+      console.log(err);
+      random();
+    })
+  }
 
-window.onload = function(e){
-  random();
-  setInterval(random, 60*1000);
-}
+  document.getElementById("another").onclick = function(e) {
+    random();
+  }
 
-    </script>
+  window.onload = function(e){
+    random();
+    setInterval(random, 60*1000);
+  }
 
-  </body>
+  </script>
+
+</body>
 
 </html>
